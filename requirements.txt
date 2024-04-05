@@ -3,3 +3,4 @@ PyAutoGUI~=0.9.54
 numpy~=1.26.4
 mss~=9.0.1
 pillow~=10.3.0
+python-dotenv~=1.0.1
