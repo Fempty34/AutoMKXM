@@ -1,9 +1,9 @@
 import subprocess
 from time import sleep
-import pyautogui
 import os
 from dotenv import load_dotenv
 import view
+from modules import tasks
 
 load_dotenv()
 
@@ -20,6 +20,8 @@ def start():
         print(colors['blue'] + "MortalKombat has been launched!")
         sleep(1.5)
         view.start_video()
+        tasks.task_handler()
+
     except Exception as e:
         print(colors['red'] + "[ERROR] " + str(e))
     finally:

@@ -1,9 +1,10 @@
 import os
+
+import pyautogui
 from dotenv import load_dotenv
 from time import sleep
 import cv2
 import numpy as np
-from mss import mss
 
 import win32gui
 import win32ui
@@ -16,19 +17,20 @@ load_dotenv()
 def start_video():
     while True:
         sleep(0.5)
-
         sct_img = get_screen()
-
         try:
             cv2.imshow('screen', np.array(sct_img))
             menu = cv2.imread('src/images/menu.png')
             compare_img = cv2.cvtColor(np.array(sct_img), cv2.COLOR_BGR2RGB)
-        except:
-            print('[ERROR] Error while getting img from screen')
+        except Exception as e:
+            print('[ERROR] Error while getting img from screen.', e)
             return -1
 
-        #if ((menu - compare_img) ** 2).mean() < 60:
-        #    print('[INFO] Mortal Combat Menu has been started')
+        #print(pyautogui.position())
+        if ((menu - compare_img) ** 2).mean() < 60:
+            print('[INFO] Mortal Combat Menu has been started')
+            break
+
         if (cv2.waitKey(1) & 0xFF) == ord('q'):
             cv2.destroyAllWindows()
             break
