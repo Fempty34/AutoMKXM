@@ -12,14 +12,14 @@ colors = {
     'red': '\033[31m',
     'blue': '\033[34m'
 }
-start_box = {'top': 150, 'left': 243, 'width': 1372, 'height': 275}
 
 
 def start():
     try:
         subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         print(colors['blue'] + "MortalKombat has been launched!")
-        view.start_video(start_box)
+        sleep(1.5)
+        view.start_video()
     except Exception as e:
         print(colors['red'] + "[ERROR] " + str(e))
     finally:

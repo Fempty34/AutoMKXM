@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from time import sleep
 import cv2
 import numpy as np
@@ -9,21 +10,25 @@ import win32ui
 from ctypes import windll
 from PIL import Image
 
+load_dotenv()
 
-def start_video(pos):
-    #sct = mss()
+
+def start_video():
     while True:
         sleep(0.5)
-        #sct_img = sct.grab(pos)
 
         sct_img = get_screen()
 
-        cv2.imshow('screen', np.array(sct_img))
-        menu = cv2.imread('src/images/menu.png')
-        compare_img = cv2.cvtColor(np.array(sct_img), cv2.COLOR_BGR2RGB)
+        try:
+            cv2.imshow('screen', np.array(sct_img))
+            menu = cv2.imread('src/images/menu.png')
+            compare_img = cv2.cvtColor(np.array(sct_img), cv2.COLOR_BGR2RGB)
+        except:
+            print('[ERROR] Error while getting img from screen')
+            return -1
 
-        if ((menu - compare_img) ** 2).mean() < 60:
-            print('[INFO] Mortal Combat Menu has been started')
+        #if ((menu - compare_img) ** 2).mean() < 60:
+        #    print('[INFO] Mortal Combat Menu has been started')
         if (cv2.waitKey(1) & 0xFF) == ord('q'):
             cv2.destroyAllWindows()
             break
@@ -32,39 +37,40 @@ def start_video(pos):
 
 
 def get_screen():
-    window_name = os.getenv('MKWINDOWNAME')
-    hwnd = win32gui.FindWindow(None, window_name)
+    try:
+        window_name = os.getenv('MKWINDOWNAME')
+        hwnd = win32gui.FindWindow(None, window_name)
 
-    left, top, right, bot = win32gui.GetWindowRect(hwnd)
-    w = right - left
-    h = bot - top
+        left, top, right, bot = win32gui.GetWindowRect(hwnd)
+        w = right - left
+        h = bot - top
 
-    hwndDC = win32gui.GetWindowDC(hwnd)
-    mfcDC = win32ui.CreateDCFromHandle(hwndDC)
-    saveDC = mfcDC.CreateCompatibleDC()
+        hwndDC = win32gui.GetWindowDC(hwnd)
+        mfcDC = win32ui.CreateDCFromHandle(hwndDC)
+        saveDC = mfcDC.CreateCompatibleDC()
 
-    saveBitMap = win32ui.CreateBitmap()
-    saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
+        saveBitMap = win32ui.CreateBitmap()
+        saveBitMap.CreateCompatibleBitmap(mfcDC, w, h)
 
-    saveDC.SelectObject(saveBitMap)
+        saveDC.SelectObject(saveBitMap)
 
-    result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 0)
+        result = windll.user32.PrintWindow(hwnd, saveDC.GetSafeHdc(), 0)
 
-    bmpinfo = saveBitMap.GetInfo()
-    bmpstr = saveBitMap.GetBitmapBits(True)
+        bmpinfo = saveBitMap.GetInfo()
+        bmpstr = saveBitMap.GetBitmapBits(True)
 
-    im = Image.frombuffer(
-        'RGB',
-        (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
-        bmpstr, 'raw', 'BGRX', 0, 1)
+        im = Image.frombuffer(
+            'RGB',
+            (bmpinfo['bmWidth'], bmpinfo['bmHeight']),
+            bmpstr, 'raw', 'BGRX', 0, 1)
 
-    win32gui.DeleteObject(saveBitMap.GetHandle())
-    saveDC.DeleteDC()
-    mfcDC.DeleteDC()
-    win32gui.ReleaseDC(hwnd, hwndDC)
+        win32gui.DeleteObject(saveBitMap.GetHandle())
+        saveDC.DeleteDC()
+        mfcDC.DeleteDC()
+        win32gui.ReleaseDC(hwnd, hwndDC)
 
-    if result == 1:
-        # PrintWindow Succeeded
         return im
-    else:
+
+    except Exception as e:
+        print("[ERROR] ", e)
         return -1
