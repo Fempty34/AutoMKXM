@@ -1,25 +1,14 @@
-from time import sleep
-
 import pyautogui as pg
 
+from view import *
 
-current_tasks = [4]
-started_tasks = [4]
-
-config_tasks = {
-    1: [1, 2, 3],
-    2: [4]
-}
-config_towers = {
-    1: [933, 480],
-    2: [800, 520]
-}
 
 def task_handler():
-    print("[INFO] Task manager has been started")
+    print(colors['blue'] + "[INFO] Task manager has been started")
     sleep(1)
     pg.click(1500, 280)
-    sleep(3)
+
+    wait_for(boxes['tasks'][0], boxes['tasks'][1])
     for task in current_tasks:
         tower = 0
         scroll = 0
@@ -31,7 +20,7 @@ def task_handler():
                 break
         print("[INFO] Tower:", tower)
         pg.click(config_towers[tower][0], config_towers[tower][1])
-        sleep(3)
+        wait_for(boxes['claim'][0], boxes['claim'][1])
 
         #TODO scroll and start
         for i in range(0, scroll):
@@ -60,9 +49,10 @@ def task_handler():
             #TODO DETECT CHANCE
         else:
             pg.click(1400, 340)
-            sleep(3)
+            wait_for(boxes['repeat'][0], boxes['repeat'][1])
             pg.click(330, 945)
-            sleep(10)
+            print(colors['green'] + f"[TASKS] Task {task} in tower {tower} has been repeated successfully")
+
 
 
 
