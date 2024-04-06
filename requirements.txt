@@ -5,3 +5,5 @@ mss~=9.0.1
 pillow~=10.3.0
 python-dotenv~=1.0.1
 PyGetWindow~=0.0.9
+timer~=0.2.2
+psutil~=5.9.8

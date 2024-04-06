@@ -18,7 +18,7 @@ def task_handler():
                 tower = key
                 scroll = value.index(task)
                 break
-        
+
         pg.click(config_towers[tower][0], config_towers[tower][1])
 
         #TODO scroll and start
@@ -55,15 +55,18 @@ def task_handler():
             sleep(2)
             pg.click(1243, 943)
             print(colors['green'] + f"[TASKS] Task {task} in tower {tower} has been started successfully")
+            started_tasks.append(task)
             sleep(3)
+            pg.click(330, 500)
             #TODO DETECT CHANCE
         else:
-            wait_for(boxes['claim'][0], boxes['claim'][1])
+            wait_for(boxes['claim'][0], boxes['claim'][1], 2)
             pg.click(1400, 340)
             wait_for(boxes['repeat'][0], boxes['repeat'][1])
             pg.click(330, 945)
             print(colors['green'] + f"[TASKS] Task {task} in tower {tower} has been repeated successfully")
             wait_for(boxes['tasks'][0], boxes['tasks'][1])
+
 
 
 

@@ -18,14 +18,16 @@ boxes = {
 
 }
 
-current_tasks = [4]
-started_tasks = []
+current_tasks = [8, 13]
+started_tasks = [8, 13]
 
 config_tasks = {
-    1: [1, 2, 3],
-    2: [4]
+    1: [3, 4, 5, 6, 7],
+    2: [8, 9, 10, 11, 12],
+    3: [13, 14, 15, 16, 17]
 }
 config_towers = {
     1: [933, 480],
-    2: [800, 520]
+    2: [800, 520],
+    3: [1180, 381]
 }
