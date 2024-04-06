@@ -2,7 +2,6 @@ import pyautogui as pg
 
 from view import *
 
-
 def task_handler():
     print(colors['blue'] + "[INFO] Task manager has been started")
     sleep(1)
