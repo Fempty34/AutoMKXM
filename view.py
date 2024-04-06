@@ -17,6 +17,7 @@ def start_video():
     except IndexError:
         print(colors['red'] + '[ERROR] The window with the specified title(MKTITLE) was not found')
 
+    print(colors['blue'] + f"Waiting for MK menu")
     while True:
         sleep(0.5)
         sct_img = sct.grab(boxes["menu"][1])
@@ -27,18 +28,20 @@ def start_video():
         except Exception as e:
             print(colors['red'] + '[ERROR] Error while getting img from screen.', e)
 
-        print(pyautogui.position())
+        print(((menu - compare_img) ** 2).mean())
         if ((menu - compare_img) ** 2).mean() < 10 * accuracy:
             print('[INFO] Mortal Combat Menu has been started')
+            sleep(1)
             break
+        print(pyautogui.position())
 
         if (cv2.waitKey(1) & 0xFF) == ord('q'):
             cv2.destroyAllWindows()
             break
-        #if (cv2.waitKey(0) & 0xFF) == ord('r'):
+        #if (cv2.waitKey(0) & 0xFF) == ord('s'):
         #    print(colors['green'] + "YES")
-        #    sct_img = sct.grab(boxes["repeat"][1])
-        #    cv2.imwrite('src/images/tasks/repeat.png', np.array(sct_img))
+        #    sct_img = sct.grab(boxes["continue_quest"][1])
+        #    cv2.imwrite('src/images/tasks/continue_quest.png', np.array(sct_img))
         #if (cv2.waitKey(1) & 0xFF) == ord('m'):
         #    sct_img = sct.grab(boxes["menu"][1])
         #    cv2.imwrite('src/images/menu/menu.png', np.array(sct_img))
@@ -50,7 +53,6 @@ def start_video():
         #    cv2.imwrite('src/images/tasks/claim.png', np.array(sct_img))
 
 
-
 def wait_for(src, box):
     sct = mss()
     print(colors['blue'] + f"[INFO] Start waiting for {src}")
@@ -60,6 +62,6 @@ def wait_for(src, box):
         compare_img1 = cv2.imread(src)
         compare_img2 = cv2.cvtColor(np.array(sct_img), cv2.COLOR_BGR2RGB)
         print(((compare_img1 - compare_img2) ** 2).mean())
-        if ((compare_img1 - compare_img2) ** 2).mean() < 13 * accuracy:
+        if ((compare_img1 - compare_img2) ** 2).mean() < 10 * accuracy:
             print(colors['blue'] + f"[INFO] Waiting for {src} has been ended")
             break
