@@ -1,27 +1,21 @@
 import subprocess
 from time import sleep
 import os
-from dotenv import load_dotenv
 import view
 import psutil
 
 from modules import tasks
 from config import *
 
-load_dotenv()
-
-cmd = os.getenv('MORTALCOMBATCMD')
-
 
 def start():
     try:
-        subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+        subprocess.Popen(MKCMD + " /user:Administrator", shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
         print(colors['green'] + "MortalKombat has been launched!")
         sleep(1.5)
         for proc in psutil.process_iter():
             if proc.name() == 'BlueStacks X.exe':
                 proc.terminate()
-        os.system('cls')
         view.start_video()
         tasks.task_handler()
         print(colors['green'] + "Code successfully executed!")
@@ -35,6 +29,6 @@ def start():
 
 
 if __name__ == "__main__":
-    start()
+    os.system('python app/app.py')
+    #start()
     print(colors['green'] + "Finished!")
-

@@ -8,13 +8,12 @@ import pyautogui
 import time
 
 def start_video():
-
     sct = mss()
-    try:
-        window = pygetwindow.getWindowsWithTitle(MKTITLE)[0]
-        window.activate()
-    except IndexError:
-        raise RuntimeError('[ERROR] The window with the specified title(MKTITLE) was not found')
+    #try:
+    #    window = pygetwindow.getWindowsWithTitle(MKTITLE)[0]
+    #    window.activate()
+    #except IndexError:
+    #    raise RuntimeError('[ERROR] The window with the specified title(MKTITLE) was not found')
 
     print(colors['blue'] + "[INFO] Waiting for MK menu", flush=True)
     while True:

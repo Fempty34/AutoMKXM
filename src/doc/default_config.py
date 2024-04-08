@@ -5,7 +5,7 @@ colors = {
 }
 
 MKTITLE = "BlueStacks App Player"
-MKCMD = 'C:\\"Program Files\\BlueStacks_nxt\\HD-Player.exe" --instance Pie64 --cmd launchAppWithBsx --package com.wb.goog.mkx --source desktop_shortcut'
+MKCMD = "C:\\Program Files\\BlueStacks_nxt\\HD-Player.exe --instance Pie64 --cmd launchAppWithBsx --package com.wb.goog.mkx --source desktop_shortcut"
 
 accuracy = 8
 
@@ -19,8 +19,8 @@ boxes = {
 
 }
 
-current_tasks = [8, 13, 0]
-started_tasks = [8]
+current_tasks = [8, 13]
+started_tasks = [8, 13]
 
 config_tasks = {
     1: [3, 4, 5, 6, 7],
