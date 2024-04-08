@@ -1,12 +1,66 @@
 import flet as ft
 import flet_core
 import math
+import pystray
+from PIL import Image
 
 from main import start
 import config
 
+tray_image = Image.open("src/images/app/tray_img.png")
+
+
+def exit_app(icon, query):
+    icon.stop()
+    p.window_destroy()
+    print("The App was closed/exited successfully!")
+
+
+def default_item_clicked(icon, query):
+    icon.visible = False
+    p.window_skip_task_bar = False
+    p.window_maximized = True
+    p.update()
+    print("Default button was pressed.")
+
+
+tray_icon = pystray.Icon(
+    name="Test",
+    icon=tray_image,
+    title="Flet in tray",
+    menu=pystray.Menu(
+        pystray.MenuItem(
+            "Open App",
+            default_item_clicked,  # alternative/broader callback: menu_item_clicked
+            default=True  # set as default menu item
+        ),
+        pystray.MenuItem(
+            "Close App",
+            exit_app  # alternative/broader callback: menu_item_clicked
+        )
+    ),
+    visible=False,
+)
+
+
+def on_window_event(e):
+    if e.data == "minimize":
+        tray_icon.visible = True
+        p.window_skip_task_bar = True
+    elif e.data == "restore":
+        tray_icon.visible = False
+        p.window_skip_task_bar = False
+    elif e.data == "close":
+        tray_icon.stop()
+        e.page.window_destroy()
+
+    p.update()
+
 
 def main(page: ft.Page):
+    global p
+    p = page
+
     def write_occure(e):
         accuracy_count.value = "Current accuracy: " + str(math.ceil(accuracy_slider.value))
         page.update()
@@ -18,11 +72,13 @@ def main(page: ft.Page):
             config.accuracy = accuracy_slider.value
 
             config.current_tasks = [int(selected_task_1.value), int(selected_task_2.value), int(selected_task_3.value)]
-            print(config.current_tasks)
             for tower, pos in config.config_towers.items():
                 config.config_towers[tower] = [tower_config.rows[tower - 1].cells[1].content.value,
                                                tower_config.rows[tower - 1].cells[2].content.value]
-
+            tray_icon.visible = True
+            p.window_skip_task_bar = True
+            p.window_minimized = True
+            p.update()
             start()
 
         except Exception as e:
@@ -35,11 +91,8 @@ def main(page: ft.Page):
             dlg.open = True
             page.update()
 
-
-
-
-
-
+    page.on_window_event = on_window_event
+    page.window_prevent_close = True
     page.title = "Configurate AutoMKXM"
     page.theme_mode = ft.ThemeMode.DARK
     page.window_height = 568
@@ -178,4 +231,5 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
+    tray_icon.run_detached()
     ft.app(main)
