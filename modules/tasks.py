@@ -2,13 +2,17 @@ import pyautogui as pg
 
 from view import *
 
+
 def task_handler():
     print(colors['blue'] + "[INFO] Task manager has been started")
     sleep(1)
-    pg.click(1500, 280)
-
-    wait_for(boxes['tasks'][0], boxes['tasks'][1])
+    x, y = select(boxes['tasks_menu'])
+    pg.click(x + 10, y + 10)
+    sleep(1)
     for task in current_tasks:
+        if task not in range(2, 57):
+            continue
+
         tower = 0
         scroll = 0
 
@@ -18,8 +22,8 @@ def task_handler():
                 scroll = value.index(task)
                 break
 
-        pg.click(config_towers[tower][0], config_towers[tower][1])
-
+        x, y = select(boxes['towers'][tower - 1])
+        pg.click(x + 3, y - 4)
         #TODO scroll and start
         for i in range(0, scroll):
             pass
@@ -27,8 +31,7 @@ def task_handler():
         start = task in started_tasks
 
         if not start:
-            wait_for(boxes['start_quest'][0], boxes['start_quest'][1])
-            pg.click(1155, 850)
+            select(boxes['start_quest'])
             sleep(2)
 
             pg.moveTo(240, 840, 0.7)
@@ -49,7 +52,7 @@ def task_handler():
             pg.moveTo(1035, 470, 0.7)
             pg.mouseUp(button='left')
 
-            wait_for(boxes['continue_quest'][0], boxes['continue_quest'][1])
+            select(boxes['continue_quest'])
             pg.click(1567, 250)
             sleep(2)
             pg.click(1243, 943)
@@ -59,13 +62,7 @@ def task_handler():
             pg.click(330, 500)
             #TODO DETECT CHANCE
         else:
-            wait_for(boxes['claim'][0], boxes['claim'][1], 2)
-            pg.click(1400, 340)
-            wait_for(boxes['repeat'][0], boxes['repeat'][1])
-            pg.click(330, 945)
+            select(boxes['claim'])
+            select(boxes['repeat'])
             print(colors['green'] + f"[TASKS] Task {task} in tower {tower} has been repeated successfully")
-            wait_for(boxes['tasks'][0], boxes['tasks'][1])
-
-
-
-
+            select(boxes['tasks'])

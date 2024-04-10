@@ -6,6 +6,7 @@ from PIL import Image
 
 from main import start
 import config
+import src.doc.default_config as df
 
 tray_image = Image.open("src/images/app/tray_img.png")
 
@@ -57,6 +58,7 @@ def on_window_event(e):
     p.update()
 
 
+
 def main(page: ft.Page):
     global p
     p = page
@@ -72,9 +74,7 @@ def main(page: ft.Page):
             config.accuracy = accuracy_slider.value
 
             config.current_tasks = [int(selected_task_1.value), int(selected_task_2.value), int(selected_task_3.value)]
-            for tower, pos in config.config_towers.items():
-                config.config_towers[tower] = [tower_config.rows[tower - 1].cells[1].content.value,
-                                               tower_config.rows[tower - 1].cells[2].content.value]
+
             tray_icon.visible = True
             p.window_skip_task_bar = True
             p.window_minimized = True
@@ -90,6 +90,28 @@ def main(page: ft.Page):
             page.dialog = dlg
             dlg.open = True
             page.update()
+
+    def return_to_default(es):
+        try:
+            config.MKCMD = df.MKCMD
+            config.MKTITLE = df.MKTITLE
+            config.accuracy = df.accuracy
+
+            config.current_tasks = df.current_tasks
+            tray_icon.visible = True
+            p.window_skip_task_bar = True
+            p.window_minimized = True
+            p.update()
+            start()
+
+        except Exception as e:
+            dlg = ft.AlertDialog(
+                title=ft.Text("Error", weight=ft.FontWeight.BOLD, color="#76ABAE", size=20),
+                bgcolor="#31363F",
+                content=ft.Text("Error while saving config:\n" + str(e), color="#EEEEEE", size=14)
+            )
+            page.dialog = dlg
+            dlg.open = True
 
     page.on_window_event = on_window_event
     page.window_prevent_close = True
@@ -125,28 +147,6 @@ def main(page: ft.Page):
     accuracy_count = ft.Text("Current accuracy: " + str(config.accuracy), text_align=ft.TextAlign.LEFT, color="#EEEEEE",
                              size=18, weight=ft.FontWeight.W_500)
 
-    tower_config = ft.DataTable(
-        columns=[
-            ft.DataColumn(ft.Text("Tower", text_align=ft.TextAlign.LEFT, color="#EEEEEE",
-                                  size=18, weight=ft.FontWeight.BOLD), numeric=True),
-            ft.DataColumn(ft.Text("Pos X", text_align=ft.TextAlign.LEFT, color="#EEEEEE",
-                                  size=18, weight=ft.FontWeight.BOLD), numeric=True),
-            ft.DataColumn(ft.Text("Pos Y", text_align=ft.TextAlign.LEFT, color="#EEEEEE",
-                                  size=18, weight=ft.FontWeight.BOLD), numeric=True),
-        ],
-    )
-    for tower, pos in config.config_towers.items():
-        tower_config.rows.append(ft.DataRow(
-            cells=[
-                ft.DataCell(ft.Text(tower, color="#EEEEEE", size=17, weight=ft.FontWeight.W_500)),
-                ft.DataCell(ft.TextField(value=pos[0], color="#EEEEEE", border_radius=0, border="none",
-                                         keyboard_type=ft.KeyboardType.NUMBER,
-                                         input_filter=ft.NumbersOnlyInputFilter())),
-                ft.DataCell(ft.TextField(value=pos[1], color="#EEEEEE", border_radius=0, border="none",
-                                         keyboard_type=ft.KeyboardType.NUMBER,
-                                         input_filter=ft.NumbersOnlyInputFilter()))
-            ]
-        ))
 
     try:
         selected_task_1 = ft.TextField(value=config.current_tasks[0], label="Task 1", color="#EEEEEE", border_radius=10,
@@ -214,11 +214,6 @@ def main(page: ft.Page):
             ),
             width=page.width - 100,
         ),
-        ft.Container(
-            content=tower_config,
-            width=page.width - 100,
-            margin=ft.Margin(top=0, bottom=15, left=0, right=0),
-        ),
         ft.ElevatedButton(
             text="Save configuration",
             width=page.width - 100,
@@ -226,7 +221,15 @@ def main(page: ft.Page):
             color="#EEEEEE",
             icon="save",
             on_click=save_config
-        )
+        ),
+        ft.ElevatedButton(
+            text="Use default",
+            width=page.width - 100,
+            bgcolor="#31363F",
+            color="#EEEEEE",
+            icon=ft.icons.KEYBOARD_RETURN,
+            on_click=return_to_default
+        ),
     )
 
 

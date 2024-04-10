@@ -10,9 +10,10 @@ from config import *
 
 def start():
     try:
-        subprocess.Popen(MKCMD + " /user:Administrator", shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+        subprocess.Popen(MKCMD + " /user:Administrator", shell=True, stdin=None,
+                         stdout=None, stderr=None, close_fds=False)
         print(colors['green'] + "MortalKombat has been launched!")
-        sleep(1.5)
+        sleep(3)
         for proc in psutil.process_iter():
             if proc.name() == 'BlueStacks X.exe':
                 proc.terminate()
@@ -30,5 +31,4 @@ def start():
 
 if __name__ == "__main__":
     os.system('python app/app.py')
-    #start()
     print(colors['green'] + "Finished!")
